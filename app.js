@@ -12,7 +12,7 @@ const MOCK_IDEAS = [
     { id: 5, title: 'Mars Logistics Dashboard', desc: 'Visual tracker for interplanetary supply chain management and automated orbital docking.', category: 'Space', difficulty: 'Advanced', time: '1 Year', poster: 'InterstellarX', color: '#8b5cf6', likes: 530, saves: 200, devs: 8, tags: ['mars', 'api'] }
 ];
 
-const CATEGORIES = ['Startup', 'Mobile App', 'Web App', 'AI Tool', 'Research Platform', 'SaaS', 'Marketplace', 'Productivity', 'Education', 'Health', 'Finance', 'Social', 'Developer Tool', 'Space'];
+const CATEGORIES = ['Science', 'Finance', 'Space', 'Health', 'AI', 'SaaS', 'Marketplace', 'Social', 'Education', 'Developer Tool'];
 
 // App State
 let state = {
@@ -237,7 +237,10 @@ const app = {
             <div class="idea-card" onclick="app.openModal(${i.id})">
                 <div class="card-header">
                     <h3 class="card-title">${i.title}</h3>
-                    <span class="badge" style="background: ${i.color}20; color: ${i.color}">${i.category}</span>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                        <span class="badge" style="background: ${i.color}20; color: ${i.color}">${i.category}</span>
+                        <span class="badge" style="background: var(--bg-elevated); color: var(--text-muted); margin-top:0.3rem">${i.type || 'Project'}</span>
+                    </div>
                 </div>
                 <p class="card-desc">${i.desc}</p>
                 <div class="card-stats">
@@ -279,7 +282,10 @@ const app = {
     },
 
     refillSwipeQueue() {
-        let pool = state.ideas.filter(i => !state.savedIds.has(i.id));
+        let pool = state.ideas.filter(i => {
+            const isSaved = state.savedIds.has(i.id) || i.status === 'saved';
+            return !isSaved && i.status !== 'archived';
+        });
         if (state.currentFilter !== 'All') {
             pool = pool.filter(i => i.category === state.currentFilter);
         }
@@ -299,7 +305,10 @@ const app = {
             <div class="stamp stamp-nope">SKIP</div>
             <div class="stamp stamp-like">SAVE</div>
             <div class="swipe-card-content">
-                <span class="swipe-hero-tag" style="color:${i.color}">${i.category}</span>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="swipe-hero-tag" style="color:${i.color}">${i.category}</span>
+                    <span class="badge" style="background:var(--bg-elevated)">${i.type || 'App'}</span>
+                </div>
                 <h2 class="swipe-title">${i.title}</h2>
                 <p class="swipe-desc">${i.desc}</p>
                 <div class="swipe-details">
@@ -360,6 +369,10 @@ const app = {
                 return;
             }
             state.savedIds.add(id);
+            // Update status in master list
+            const idea = state.ideas.find(i => i.id === id);
+            if (idea) idea.status = 'saved';
+            
             this.showToast('Idea saved!');
             storage.save();
         }
@@ -411,7 +424,7 @@ const app = {
     // --- Profile & Saved ---
     renderSaved() {
         const list = document.getElementById('saved-ideas-list');
-        const saved = state.ideas.filter(i => state.savedIds.has(i.id));
+        const saved = state.ideas.filter(i => state.savedIds.has(i.id) || i.status === 'saved');
         if (saved.length === 0) {
             list.innerHTML = `<div style="grid-column:1/-1; padding:4rem; text-align:center; color:var(--text-muted)">No saved ideas yet. Start swiping!</div>`;
             return;
@@ -472,10 +485,12 @@ const app = {
                 title: document.getElementById('idea-title').value,
                 desc: document.getElementById('idea-desc').value,
                 category: document.getElementById('idea-category').value,
+                type: document.getElementById('idea-type').value,
                 difficulty: document.getElementById('idea-difficulty').value,
-                time: 'Varies',
+                time: document.getElementById('idea-time-input').value,
                 poster: state.user.name,
                 color: '#8b5cf6',
+                status: 'available',
                 likes: 0,
                 saves: 0,
                 devs: 0,
