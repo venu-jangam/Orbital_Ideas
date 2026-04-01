@@ -149,9 +149,45 @@ const app = {
         obContainer.querySelectorAll('.filter-chip').forEach(c => {
             c.onclick = () => c.classList.toggle('active');
         });
+
+        // Modal close listeners
+        document.querySelectorAll('.modal-close, .modal-overlay').forEach(el => {
+            el.onclick = () => this.hideModals();
+        });
+
+        // Edit Profile Form
+        const editForm = document.getElementById('edit-profile-form');
+        editForm.onsubmit = (e) => {
+            e.preventDefault();
+            state.user.name = document.getElementById('edit-name').value;
+            state.user.bio = document.getElementById('edit-bio').value;
+            state.user.interests = Array.from(document.querySelectorAll('#edit-interests .filter-chip.active')).map(c => c.textContent);
+            
+            this.hideModals();
+            this.renderProfile();
+            this.updateAuthUI();
+            this.showToast('Profile records updated.');
+            storage.save();
+        };
     },
 
     showOnboarding() { document.getElementById('onboarding-modal').classList.add('open'); },
+
+    showEditProfileModal() {
+        if (!state.isAuthenticated) return;
+        document.getElementById('edit-name').value = state.user.name;
+        document.getElementById('edit-bio').value = state.user.bio || '';
+        
+        const container = document.getElementById('edit-interests');
+        container.innerHTML = CATEGORIES.map(c => `
+            <span class="filter-chip ${state.user.interests.includes(c) ? 'active' : ''}">${c}</span>
+        `).join('');
+        container.querySelectorAll('.filter-chip').forEach(c => {
+            c.onclick = () => c.classList.toggle('active');
+        });
+
+        document.getElementById('edit-profile-modal').classList.add('open');
+    },
 
     updateAuthUI() {
         const loggedIn = state.isAuthenticated;
