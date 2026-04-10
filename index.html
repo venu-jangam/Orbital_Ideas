@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OrbitIdeas | Space Discovery Platform</title>
+    <title>OrbitalIdeas | Space Discovery Platform</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap"
         rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -18,38 +18,35 @@
 
 <body>
     <!-- Background Elements -->
-    <div class="starfield"></div>
-    <div class="nebula-glow nebula-1"></div>
-    <div class="nebula-glow nebula-2"></div>
+    <div class="starfield" id="starfield"></div>
 
     <div class="app-container">
         <!-- Desktop/Tablet Top Navigation -->
         <nav class="top-nav">
             <div class="logo" onclick="app.navigate('home')">
-                <i class="ti ti-planet"></i> OrbitIdeas
+                <i class="ti ti-planet"></i> OrbitalIdeas
             </div>
+            
             <div class="nav-links">
-                <a href="#home" class="nav-link active" data-target="home"><i class="ti ti-home-2"></i>
-                    <span>Home</span></a>
-                <a href="#discover" class="nav-link" data-target="discover"><i class="ti ti-cards"></i>
-                    <span>Discover</span></a>
-                <a href="#post" class="nav-link" data-target="post"><i class="ti ti-circle-plus"></i>
-                    <span>Post</span></a>
-                <a href="#dashboard" class="nav-link" data-target="dashboard"><i class="ti ti-layout-dashboard"></i>
-                    <span>Dashboard</span></a>
-                <a href="#messages" class="nav-link" data-target="messages"><i class="ti ti-message"></i>
-                    <span>Messages</span></a>
+                <a href="#home" class="nav-link active" data-target="home">Home</a>
+                <a href="#discover" class="nav-link" data-target="discover">Discover</a>
+                <a href="#post" class="nav-link" data-target="post">Post Idea</a>
+                <a href="#dashboard" class="nav-link" data-target="dashboard" style="display:none;" id="nav-dash-link">Dashboard</a>
+                <a href="#messages" class="nav-link" data-target="messages" style="display:none;" id="nav-msgs-link">
+                    Messages <span class="badge badge-msg" id="msg-badge-count" style="display:none;">0</span>
+                </a>
+                
+                <div class="theme-toggle" onclick="app.toggleTheme()">
+                    <i class="ti ti-moon" id="theme-icon"></i>
+                </div>
 
                 <div id="nav-user-profile" class="nav-user-profile" style="display: none;">
+                    <div class="role-indicator" id="role-indicator" onclick="app.showEditProfileModal()">💡 Idea Mode</div>
                     <a href="#profile" class="nav-link" data-target="profile">
                         <img id="nav-avatar" src="" class="avatar-sm" alt="Avatar">
-                        <span id="nav-username">Pilot</span>
                     </a>
-                    <button class="btn-logout" onclick="app.signOut()" title="Sign Out"><i
-                            class="ti ti-logout"></i></button>
                 </div>
-                <button id="nav-signin-btn" class="btn btn-primary" onclick="app.showAuthModal()">Launch
-                    Session</button>
+                <button id="nav-signin-btn" class="btn btn-primary" onclick="app.showAuthModal()">Sign In</button>
             </div>
         </nav>
 
@@ -58,30 +55,50 @@
             <!-- Home Page -->
             <section id="page-home" class="page active">
                 <div class="hero">
-                    <h1 class="gradient-text">The Future of Space.<br>Built by You.</h1>
-                    <p>Discover, post, and collaborate on world-changing space technology concepts from Earth
-                        Observation to Lunar Missions.</p>
+                    <h1 class="hero-title">The Future of Space.<br>Built by You.</h1>
+                    <p class="hero-subtitle">OrbitalIdeas is a space-themed idea-sharing platform where dreamers post concepts and builders pick them up.</p>
 
                     <div id="hero-auth-cta" class="hero-actions">
                         <button class="btn btn-primary btn-lg" onclick="app.showAuthModal()">Join the Mission</button>
-                        <button class="btn btn-secondary btn-lg" onclick="app.navigate('discover')"><i
-                                class="ti ti-cards"></i> View Concepts</button>
+                        <button class="btn btn-secondary btn-lg" onclick="app.navigate('discover')">Browse Ideas</button>
                     </div>
 
                     <div id="hero-user-cta" class="hero-actions" style="display: none;">
-                        <h3 id="welcome-message" style="margin-bottom: 2rem;">Welcome back to Mission Control!</h3>
-                        <button class="btn btn-primary" onclick="app.navigate('post')"><i class="ti ti-rocket"></i> I
-                            Have an Idea</button>
-                        <button class="btn btn-secondary" onclick="app.navigate('discover')"><i class="ti ti-cards"></i>
-                            Want to Build</button>
+                        <button class="btn btn-primary" onclick="app.navigate('post')"><i class="ti ti-rocket"></i> Post Idea</button>
+                        <button class="btn btn-secondary" onclick="app.navigate('discover')"><i class="ti ti-cards"></i> Start Swiping</button>
                     </div>
                 </div>
 
                 <div class="home-sections">
-                    <h3 style="margin-bottom: 1.5rem;">Trending Domains</h3>
+                    <div class="stats-bar">
+                        <div class="stat-item"><strong id="stat-ideas">142</strong> ideas launched</div>
+                        <div class="stat-item"><strong id="stat-builders">89</strong> builders active</div>
+                        <div class="stat-item"><strong id="stat-collabs">34</strong> collaborations</div>
+                    </div>
+
+                    <h3 class="section-heading">How It Works</h3>
+                    <div class="how-it-works">
+                        <div class="step-card">
+                            <div class="step-icon"><i class="ti ti-bulb"></i></div>
+                            <h4>1. Post</h4>
+                            <p>Share your cosmic concepts with the community.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon"><i class="ti ti-compass"></i></div>
+                            <h4>2. Discover</h4>
+                            <p>Swipe through innovative space ideas.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon"><i class="ti ti-tool"></i></div>
+                            <h4>3. Build</h4>
+                            <p>Connect and turn ideas into reality.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="section-heading">Featured Categories</h3>
                     <div class="discover-filters" id="home-sectors"></div>
 
-                    <h3 style="margin-top: 3rem; margin-bottom: 1.5rem;">Recent Launches</h3>
+                    <h3 class="section-heading">Concepts from the Cosmos <span class="ai-badge">✨ AI Oracle</span></h3>
                     <div class="dashboard-grid" id="featured-ideas"></div>
                 </div>
             </section>
@@ -92,56 +109,59 @@
 
                 <div class="swipe-interface">
                     <div class="card-stack" id="swipe-container">
-                        <div class="empty-card">
+                        <div class="empty-card" id="empty-state-swipe">
                             <i class="ti ti-satellite-off"></i>
-                            <p>No more signals in this sector. Try another category.</p>
+                            <p>No more ideas left in this domain. Try another filter!</p>
                         </div>
                     </div>
 
                     <div class="swipe-actions">
-                        <button class="swipe-btn btn-nope" id="btn-skip"><i class="ti ti-x"></i></button>
-                        <button class="swipe-btn btn-details" onclick="app.openModalFromSwipe()"><i
-                                class="ti ti-chevron-up"></i></button>
-                        <button class="swipe-btn btn-like" id="btn-save"><i class="ti ti-heart"></i></button>
+                        <button class="swipe-btn btn-nope" onclick="app.handleSwipeChoice('left')" title="Pass (Left Arrow)"><i class="ti ti-x"></i></button>
+                        <button class="swipe-btn btn-save" onclick="app.handleSwipeChoice('up')" title="Save (Up Arrow/S)"><i class="ti ti-bookmark"></i></button>
+                        <button class="swipe-btn btn-like" onclick="app.handleSwipeChoice('right')" title="Build (Right Arrow)"><i class="ti ti-heart"></i></button>
                     </div>
                 </div>
             </section>
 
             <!-- Post Idea Screen -->
             <section id="page-post" class="page">
-                <div class="form-container" style="max-width: 800px; margin: 0 auto;">
-                    <h2 class="page-heading">Transmit a New Concept</h2>
-                    <p class="text-muted" style="margin-bottom: 2.5rem;">Detail your cosmic vision for the community.
-                    </p>
+                <div class="form-container">
+                    <h2 class="page-heading">Transmit a Concept</h2>
+                    <p class="text-muted" style="margin-bottom: 2.5rem;">Detail your cosmic vision for builders to pick up.</p>
 
                     <form id="post-idea-form">
-                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                            <div class="form-group">
-                                <label>Concept Title</label>
-                                <input type="text" id="idea-title" placeholder="E.g., Lunar Microgrid" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Concept Title <span class="char-count" id="title-char-count">0/80</span></label>
+                            <input type="text" id="idea-title" placeholder="E.g., Lunar Microgrid" maxlength="80" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>One-Line Summary <span class="char-count" id="summary-char-count">0/120</span></label>
+                            <input type="text" id="idea-tagline" placeholder="The swipe card tagline..." maxlength="120" required>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group">
                                 <label>Space Category</label>
                                 <select id="idea-category" required></select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>One-Line Summary</label>
-                            <input type="text" id="idea-tagline" placeholder="Pitch it in 10 words or less." required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Detailed Mission Parameters</label>
-                            <textarea id="idea-desc" rows="4"
-                                placeholder="Describe the technology, research, or service..." required></textarea>
-                        </div>
-
-                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                             <div class="form-group">
                                 <label>Idea Type</label>
                                 <select id="idea-type" required></select>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detailed Mission Parameters</label>
+                            <textarea id="idea-desc" rows="4" placeholder="Describe the problem, your proposed solution, and why space needs this..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>The Problem It Solves</label>
+                            <textarea id="idea-problem" rows="2" placeholder="What pain point does this address? E.g., Dust accumulation on lunar solar panels." required></textarea>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group">
                                 <label>Current Stage</label>
                                 <select id="idea-stage">
@@ -154,92 +174,136 @@
                             <div class="form-group">
                                 <label>Difficulty</label>
                                 <select id="idea-difficulty">
-                                    <option value="Beginner">Orbital (Easy)</option>
-                                    <option value="Intermediate">Lunar (Mid)</option>
-                                    <option value="Advanced">Deep Space (Hard)</option>
+                                    <option value="Orbital (Easy)">Orbital (Easy)</option>
+                                    <option value="Lunar (Mid)">Lunar (Mid)</option>
+                                    <option value="Deep Space (Hard)">Deep Space (Hard)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Estimated Build Time</label>
+                                <select id="idea-time">
+                                    <option value="1 week">1 week</option>
+                                    <option value="1 month">1 month</option>
+                                    <option value="3–6 months">3–6 months</option>
+                                    <option value="1 year">1 year</option>
+                                    <option value="2+ years">2+ years</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>The Problem it Solves</label>
-                            <textarea id="idea-problem" rows="2"
-                                placeholder="What pain point does this address?"></textarea>
+                            <label>Tags/Keywords (comma separated)</label>
+                            <input type="text" id="idea-tags" placeholder="mars, ai, rovers">
                         </div>
 
-                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                            <div class="form-group">
-                                <label>Build Time (Est)</label>
-                                <input type="text" id="idea-time" placeholder="E.g., 6 months">
-                            </div>
-                            <div class="form-group">
-                                <label>Keywords / Tags</label>
-                                <input type="text" id="idea-tags" placeholder="react, machine-learning, lidar">
+                        <div class="form-group">
+                            <label>Looking for</label>
+                            <div id="idea-looking-for" class="pill-group">
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Co-founder</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Developer</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Designer</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Researcher</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Investor</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Domain Expert</span>
+                                <span class="filter-chip" onclick="this.classList.toggle('active')">Mentor</span>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block"
-                            style="margin-top: 1rem; padding: 1.2rem;">Launch Idea to Network</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1rem;">Launch Idea into Orbit <i class="ti ti-rocket"></i></button>
                     </form>
                 </div>
             </section>
 
             <!-- Dashboard Screen -->
             <section id="page-dashboard" class="page">
-                <h2 class="page-heading">Your Mission Control</h2>
-                <div class="discover-filters" style="margin-top: 1rem;">
-                    <button class="filter-chip active" data-tab="saved">Saved Concepts</button>
-                    <button class="filter-chip" data-tab="posted">My Launches</button>
-                    <button class="filter-chip" data-tab="collaborating">Collaborating</button>
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="page-heading" id="dash-greeting">Welcome back, Explorer</h2>
+                        <p class="text-muted" id="dash-tip" style="margin-bottom:1rem;">Daily Briefing: Engaging with 5 ideas daily increases your matching signals by 40%.</p>
+                    </div>
+                    <div class="star-progress-container">
+                        <div class="progress-bar-wrap">
+                            <div class="progress-label"><span>🟡 Visionary</span> <span id="dash-yellow-star-lvl">⭐ 1</span></div>
+                            <div class="progress-track"><div class="progress-fill yellow" id="dash-yellow-fill"></div></div>
+                            <div class="progress-sub" id="dash-yellow-sub">4 ideas to next star</div>
+                        </div>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-label"><span>🔴 Builder</span> <span id="dash-red-star-lvl">⭐ 0</span></div>
+                            <div class="progress-track"><div class="progress-fill red" id="dash-red-fill"></div></div>
+                            <div class="progress-sub" id="dash-red-sub">1 build to next star</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discover-filters" style="margin-top: 1rem;" id="dash-tabs">
+                    <button class="filter-chip active" data-tab="My Launches">My Launches</button>
+                    <button class="filter-chip" data-tab="Building">Building</button>
+                    <button class="filter-chip" data-tab="Saved">Saved</button>
                 </div>
 
                 <div class="dashboard-grid" id="dashboard-ideas-list" style="margin-top: 2rem;"></div>
+
+                <h3 class="section-heading" style="margin-top: 4rem;">Recommended for You</h3>
+                <div class="dashboard-grid" id="dash-recommended" style="margin-top: 1rem;"></div>
             </section>
 
             <!-- Messages Screen -->
             <section id="page-messages" class="page">
                 <h2 class="page-heading">Signal Inbox</h2>
-                <div class="dashboard-grid" id="messages-list"
-                    style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                <div class="chat-layout">
+                    <div class="chat-sidebar" id="messages-list">
+                        <!-- Threads -->
+                    </div>
+                    <div class="chat-area" id="chat-area" style="display:none;">
+                        <div class="chat-header" id="chat-header">
+                            <div>
+                                <h4 id="chat-partner">Partner Name</h4>
+                                <small id="chat-context" class="text-muted">Re: Idea Title</small>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Messages go here -->
+                        </div>
+                        <div class="chat-input" id="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Type a message...">
+                            <button class="btn btn-primary" onclick="app.sendMessage()"><i class="ti ti-send"></i></button>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Profile Screen -->
             <section id="page-profile" class="page">
-                <div class="profile-header">
-                    <div class="avatar-large">
-                        <img id="profile-page-avatar" src="" alt="Avatar">
-                    </div>
-                    <div class="profile-info">
-                        <h2 id="profile-page-name" class="page-heading">Commander</h2>
-                        <p id="profile-page-bio" class="text-muted">Space Enthusiast & Visionary</p>
-                        <div class="profile-stats">
-                            <div class="stat"><span class="val" id="profile-saves-count">0</span><span
-                                    class="label">Saves</span></div>
-                            <div class="stat"><span class="val" id="profile-posted-count">0</span><span
-                                    class="label">Launches</span></div>
-                            <div class="stat"><span class="val" id="profile-collab-count">0</span><span
-                                    class="label">Missions</span></div>
+                <div class="profile-header card-glass">
+                    <div class="profile-main">
+                        <img id="profile-page-avatar" src="" alt="Avatar" class="avatar-large">
+                        <div class="profile-info">
+                            <h2 id="profile-page-name" class="page-heading">Commander</h2>
+                            <p id="profile-page-username" class="username-handle">@astro_unknown</p>
+                            <p id="profile-page-bio" class="text-muted">No bio provided.</p>
+                            
+                            <div class="star-ratings">
+                                <div class="star-badge yellow" title="Idea Giver Rank">
+                                    <span class="star-icon">💡</span> <span id="profile-yellow-stars">⭐</span>
+                                </div>
+                                <div class="star-badge red" title="Builder Rank">
+                                    <span class="star-icon">🔧</span> <span id="profile-red-stars"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-secondary" onclick="app.showEditProfileModal()"><i class="ti ti-edit"></i> Edit Profile</button>
+                            <button class="btn btn-secondary" onclick="app.signOut()"><i class="ti ti-logout"></i> Sign Out</button>
                         </div>
                     </div>
-                    <div style="margin-left: auto; display: flex; gap: 0.8rem; align-self: flex-start;">
-                        <button class="btn btn-secondary" onclick="app.showEditProfileModal()"><i
-                                class="ti ti-edit"></i> Edit Profile</button>
-                        <button class="btn btn-secondary" onclick="app.signOut()"><i class="ti ti-logout"></i> Sign
-                            Out</button>
-                    </div>
-                </div>
 
-                <div class="dashboard-grid">
-                    <div class="idea-item-card">
-                        <h3 style="margin-bottom: 1rem;">Domains</h3>
-                        <div id="profile-interests-display" class="discover-filters" style="flex-wrap: wrap;"></div>
+                    <div class="profile-stats-row">
+                        <div class="stat-box"><strong id="profile-ideas-count">0</strong> Ideas Posted</div>
+                        <div class="stat-box"><strong id="profile-build-count">0</strong> Ideas Building</div>
+                        <div class="stat-box"><strong id="profile-swipe-count">0</strong> Right Swipes Received</div>
                     </div>
-                    <div class="idea-item-card">
-                        <h3 style="margin-bottom: 1rem;">Stats</h3>
-                        <p class="text-muted">Rank: Elite Explorer</p>
-                        <p class="text-muted">Signals Sent: 12</p>
-                        <p class="text-muted">Orbit Time: 45 Days</p>
-                    </div>
+                    
+                    <div class="profile-interests" id="profile-page-interests"></div>
                 </div>
             </section>
         </main>
@@ -249,26 +313,30 @@
             <div class="modal-overlay"></div>
             <div class="modal-content auth-box">
                 <button class="modal-close" onclick="app.hideModals()"><i class="ti ti-x"></i></button>
-                <h2>Launch Session</h2>
-                <p>Join the cosmic community of space builders.</p>
+                <h2>Sign Up & Launch</h2>
+                <p>Join OrbitalIdeas to post concepts and connect with builders.</p>
                 <form id="signup-form">
                     <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="signup-email" placeholder="astronaut@nasamail.com" required>
+                        <input type="text" id="signup-first" placeholder="First Name" required>
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="signup-pass" placeholder="••••••••" required>
+                        <input type="text" id="signup-last" placeholder="Last Name" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Establish Uplink</button>
+                    <div class="form-group">
+                        <input type="email" id="signup-email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signup-pass" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
                 </form>
-                <div class="auth-divider" style="margin: 2rem 0; opacity: 0.3; text-align: center;">--- or connect via
-                    ---</div>
+                <div class="auth-divider">--- or connect via ---</div>
                 <div style="display: flex; gap: 1rem;">
-                    <button class="btn btn-secondary btn-block" onclick="app.mockSocialAuth('GitHub')"><i
-                            class="ti ti-brand-github"></i> GitHub</button>
-                    <button class="btn btn-secondary btn-block" onclick="app.mockSocialAuth('Google')"><i
-                            class="ti ti-brand-google"></i> Google</button>
+                    <button class="btn btn-secondary btn-block" onclick="app.mockSocialAuth('GitHub')"><i class="ti ti-brand-github"></i> GitHub</button>
+                    <button class="btn btn-secondary btn-block" onclick="app.mockSocialAuth('Google')"><i class="ti ti-brand-google"></i> Google</button>
+                </div>
+                <div style="margin-top:20px; font-size:0.9rem;">
+                    <a href="#" onclick="app.mockLogin()">Testing? Click here to quick login</a>
                 </div>
             </div>
         </div>
@@ -277,59 +345,69 @@
         <div class="modal" id="onboarding-modal">
             <div class="modal-overlay"></div>
             <div class="modal-content">
-                <h2>Profile Establishment</h2>
-                <p class="text-muted">Setting up your identity in the space sector.</p>
+                <h2>Welcome to OrbitalIdeas</h2>
+                <p class="text-muted">Let's set up your mission profile.</p>
                 <form id="onboarding-form" style="margin-top: 2rem;">
                     <div class="form-group">
-                        <label>Full Pilot Name</label>
-                        <input type="text" id="ob-name" placeholder="E.g., Margaret Hamilton" required>
+                        <label>Your Username</label>
+                        <input type="text" id="ob-username" required>
+                        <small class="text-muted">You can customize this once.</small>
                     </div>
                     <div class="form-group">
-                        <label>Primary Focus</label>
-                        <select id="ob-role">
-                            <option value="Idea Creator">Idea Creator</option>
-                            <option value="Builder">Builder / Researcher</option>
-                            <option value="Both">Both</option>
-                        </select>
+                        <label>Primary Role</label>
+                        <div class="role-selector" id="ob-role-selector">
+                            <div class="role-card active" data-role="💡 Idea Giver">
+                                <i class="ti ti-bulb"></i> Idea Giver
+                            </div>
+                            <div class="role-card" data-role="🔧 Builder">
+                                <i class="ti ti-tool"></i> Builder
+                            </div>
+                            <div class="role-card" data-role="🌌 Both">
+                                <i class="ti ti-infinity"></i> Both
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Target Domains</label>
-                        <div id="ob-interests" class="discover-filters" style="flex-wrap: wrap; padding: 0;"></div>
+                        <label>Domain Interests (Select multiple)</label>
+                        <div id="ob-interests" class="pill-group"></div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Confirm Launch</button>
+                    <button type="submit" class="btn btn-primary btn-block">Complete Setup</button>
                 </form>
             </div>
         </div>
 
+        <!-- Edit Profile Modal -->
         <div class="modal" id="edit-profile-modal">
             <div class="modal-overlay"></div>
             <div class="modal-content">
                 <button class="modal-close" onclick="app.hideModals()"><i class="ti ti-x"></i></button>
-                <h2>Edit Pilot Profile</h2>
-                <p class="text-muted">Update your mission records.</p>
+                <h2>Edit Profile</h2>
                 <form id="edit-profile-form" style="margin-top: 2rem;">
-                    <div class="form-group">
-                        <label>Full Pilot Name</label>
-                        <input type="text" id="edit-name" required>
-                    </div>
                     <div class="form-group">
                         <label>Bio / Mission Statement</label>
                         <textarea id="edit-bio" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Orbit Interests</label>
-                        <div id="edit-interests" class="discover-filters" style="flex-wrap: wrap; padding: 0;"></div>
+                        <label>Primary Role</label>
+                         <select id="edit-role">
+                            <option value="💡 Idea Giver">💡 Idea Giver</option>
+                            <option value="🔧 Builder">🔧 Builder</option>
+                            <option value="🌌 Both">🌌 Both</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sync with Station</button>
+                    <div class="form-group">
+                        <label>Interests</label>
+                        <div id="edit-interests" class="pill-group"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
                 </form>
             </div>
         </div>
 
         <!-- Detail Modal -->
         <div class="modal" id="idea-modal">
-            <div class="modal-overlay"></div>
-            <div class="modal-content" style="max-width: 700px;">
-                <button class="modal-close" onclick="app.hideModals()"><i class="ti ti-x"></i></button>
+            <div class="modal-overlay" onclick="app.hideModals()"></div>
+            <div class="modal-content" style="max-width: 700px; padding: 0; overflow: hidden; border-radius: var(--radius-xl);">
                 <div id="idea-modal-body"></div>
             </div>
         </div>
@@ -339,13 +417,14 @@
             <a href="#home" class="nav-link active" data-target="home"><i class="ti ti-home-2"></i></a>
             <a href="#discover" class="nav-link" data-target="discover"><i class="ti ti-cards"></i></a>
             <a href="#post" class="nav-link" data-target="post"><i class="ti ti-circle-plus"></i></a>
+            <a href="#messages" class="nav-link" data-target="messages"><i class="ti ti-message"></i></a>
             <a href="#dashboard" class="nav-link" data-target="dashboard"><i class="ti ti-layout-dashboard"></i></a>
-            <a href="#profile" class="nav-link" data-target="profile"><i class="ti ti-user"></i></a>
         </nav>
 
-        <div class="toast" id="toast">Signal Received</div>
+        <div class="toast" id="toast">Message</div>
     </div>
 
+    <!-- Scripting -->
     <script src="app.js"></script>
 </body>
 
