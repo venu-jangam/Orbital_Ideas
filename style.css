@@ -185,11 +185,11 @@ h1, h2, h3, h4, h5, .logo {
     height: calc(100vh - var(--nav-height) - 150px);
     position: relative; padding-top: 2rem;
 }
-.card-stack { position: relative; width: 400px; height: 560px; max-width: 90vw; }
+.card-stack { position: relative; width: 420px; height: 620px; max-width: 90vw; }
 .swipe-card {
     position: absolute; top:0; left:0; width: 100%; height: 100%;
     background: var(--bg-elevated); border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl); padding: 2.5rem; display: flex; flex-direction: column;
+    border-radius: var(--radius-xl); padding: 2rem; display: flex; flex-direction: column;
     box-shadow: var(--shadow-soft); cursor: grab; user-select: none;
     background-image: radial-gradient(circle at top right, var(--violet-glow), transparent 70%);
 }
@@ -214,12 +214,12 @@ h1, h2, h3, h4, h5, .logo {
 .btn-save { color: var(--gold); }
 .btn-like { color: var(--teal); }
 
-.card-badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: var(--violet-glow); color: var(--violet); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; }
-.card-title { font-size: 2rem; line-height: 1.2; margin-bottom: 1rem; }
-.card-summary { color: var(--text-muted); font-size: 1.1rem; flex-grow: 1; }
+.card-badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: var(--violet-glow); color: var(--violet); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+.card-title { font-size: 1.8rem; line-height: 1.25; margin-bottom: 0.8rem; }
+.card-summary { color: var(--text-muted); font-size: 1.05rem; flex-grow: 1; margin-bottom: 0.5rem; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 .meta-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-muted); }
-.card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: auto; }
 .poster-info { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; }
 .poster-info i { color: var(--gold); }
 
